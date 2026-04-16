@@ -35,6 +35,8 @@ public class PreProcessador {
      * @return conteudo formatado
      */
     public static String formatarConteudo(String conteudo){
+      // Normaliza line endings (Windows \r\n -> \n) antes de qualquer processamento
+      conteudo = conteudo.replaceAll("\r\n", "\n");
       // Colapsa múltiplas linhas vazias e deixa no máximo uma
       conteudo = conteudo.replaceAll("\n\\s*\n+", "\n\n");
       // Remove espaços/tabs excessivos e os substitui por um único espaço
