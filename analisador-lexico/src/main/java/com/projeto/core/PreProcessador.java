@@ -22,7 +22,7 @@ public class PreProcessador {
      * @return conteudo sem comentários
      */
     public static String removerComentarios(String conteudo){
-      // Remove comentários de bloco (/* */) incluisive com múltiplas linhas
+      // Remove comentários de bloco (/* */) inclusive com múltiplas linhas
       conteudo = conteudo.replaceAll("(?s)/\\*.*?\\*/", "");
       // Remove comentários (//) até o final da linha
       conteudo = conteudo.replaceAll("//.*", "");
