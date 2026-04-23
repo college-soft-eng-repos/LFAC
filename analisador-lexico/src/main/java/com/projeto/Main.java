@@ -1,8 +1,9 @@
 package main.java.com.projeto;
 
-import main.java.com.projeto.core.PreProcessador;
-import main.java.com.projeto.core.Tokenizacao;
-import main.java.com.projeto.core.Token;
+import main.java.com.projeto.core.analyzer.Tokenizacao;
+import main.java.com.projeto.core.model.Token;
+import main.java.com.projeto.core.processor.PreProcessador;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -15,12 +16,11 @@ public class Main {
       // Caminhos dos arquivos - usando variável de ambiente LFAC_RESOURCES_PATH
       String resourcesPath = System.getenv("LFAC_RESOURCES_PATH");
       if (resourcesPath == null || resourcesPath.trim().isEmpty()) {
-        resourcesPath = "./resources";
+        resourcesPath = "analisador-lexico/resources";
       }
       String caminhoArquivoFat = resourcesPath + "/arquivo.fat";
       String caminhoArquivoEsg = caminhoArquivoFat.replace(".fat", ".esg");
       String caminhoArquivoTks = caminhoArquivoFat.replace(".fat", ".tks");
-
 
       // Pré-processar arquivo .fat e gerar arquivo .esg
       System.out.println("Pré-processando arquivo...");
@@ -55,8 +55,9 @@ public class Main {
 
   /**
    * Salva a saída de tokens em um arquivo .tks
+   * 
    * @param conteudo conteúdo formatado dos tokens
-   * @param caminho caminho do arquivo de saída
+   * @param caminho  caminho do arquivo de saída
    * @throws IOException se houver erro na escrita
    */
   private static void salvarTokensEmArquivo(String conteudo, String caminho) throws IOException {

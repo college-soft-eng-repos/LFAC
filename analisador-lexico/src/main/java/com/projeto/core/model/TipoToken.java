@@ -1,4 +1,4 @@
-package main.java.com.projeto.core;
+package main.java.com.projeto.core.model;
 
 /**
  * Enum que representa os tipos de tokens reconhecidos pelo analisador léxico

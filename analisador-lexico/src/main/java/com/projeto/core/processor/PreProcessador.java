@@ -1,4 +1,4 @@
-package main.java.com.projeto.core;
+package main.java.com.projeto.core.processor;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;

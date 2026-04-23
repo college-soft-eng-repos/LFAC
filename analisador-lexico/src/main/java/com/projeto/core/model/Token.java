@@ -1,4 +1,4 @@
-package main.java.com.projeto.core;
+package main.java.com.projeto.core.model;
 
 /**
  * Representa um token identificado pelo analisador léxico
