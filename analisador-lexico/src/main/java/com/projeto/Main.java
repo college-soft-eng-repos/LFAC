@@ -12,8 +12,12 @@ public class Main {
 
   public static void main(String[] args) {
     try {
-      // Caminhos dos arquivos
-      String caminhoArquivoFat = "/home/gabriella/Documentos/College/Subjects/01.2026/LFAC/analisador-lexico/resources/arquivo.fat";
+      // Caminhos dos arquivos - usando variável de ambiente LFAC_RESOURCES_PATH
+      String resourcesPath = System.getenv("LFAC_RESOURCES_PATH");
+      if (resourcesPath == null || resourcesPath.trim().isEmpty()) {
+        resourcesPath = "./resources";
+      }
+      String caminhoArquivoFat = resourcesPath + "/arquivo.fat";
       String caminhoArquivoEsg = caminhoArquivoFat.replace(".fat", ".esg");
       String caminhoArquivoTks = caminhoArquivoFat.replace(".fat", ".tks");
 

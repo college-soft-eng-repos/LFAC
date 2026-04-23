@@ -1,0 +1,401 @@
+Aluna: Gabriella Pio Correa
+
+Main.java
+
+package main.java.com.projeto;
+
+import main.java.com.projeto.core.PreProcessador;
+import main.java.com.projeto.core.Tokenizacao;
+import main.java.com.projeto.core.Token;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+
+public class Main {
+
+  public static void main(String[] args) {
+    try {
+      // Caminhos dos arquivos
+      String caminhoArquivoFat = "/home/gabriella/Documentos/College/Subjects/01.2026/LFAC/analisador-lexico/resources/arquivo.fat";
+      String caminhoArquivoEsg = caminhoArquivoFat.replace(".fat", ".esg");
+      String caminhoArquivoTks = caminhoArquivoFat.replace(".fat", ".tks");
+
+
+      // Pré-processar arquivo .fat e gerar arquivo .esg
+      System.out.println("Pré-processando arquivo...");
+      PreProcessador.processarArquivo(caminhoArquivoFat);
+      System.out.println("Arquivo .esg gerado: " + caminhoArquivoEsg + "\n");
+
+      // Ler arquivo .esg
+      System.out.println("Lendo arquivo .esg...");
+      String conteudo = PreProcessador.lerArquivo(caminhoArquivoEsg);
+      System.out.println("Arquivo lido com sucesso\n");
+
+      // Tokenizar conteúdo
+      System.out.println("Tokenizando...");
+      List<Token> tokens = Tokenizacao.tokenizar(conteudo);
+      System.out.println(tokens.size() + " tokens identificados\n");
+
+      // Exibir tokens
+      System.out.println("TOKENS");
+      String saidaTokens = Tokenizacao.formatarSaida(tokens);
+      System.out.println(saidaTokens);
+
+      // 5. Salvar tokens em arquivo .tks
+      System.out.println("\nSALVANDO");
+      salvarTokensEmArquivo(saidaTokens, caminhoArquivoTks);
+      System.out.println("Tokens salvos em: " + caminhoArquivoTks);
+
+    } catch (IOException e) {
+      System.err.println("Erro ao processar arquivo: " + e.getMessage());
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * Salva a saída de tokens em um arquivo .tks
+   * @param conteudo conteúdo formatado dos tokens
+   * @param caminho caminho do arquivo de saída
+   * @throws IOException se houver erro na escrita
+   */
+  private static void salvarTokensEmArquivo(String conteudo, String caminho) throws IOException {
+    Files.writeString(Paths.get(caminho), conteudo);
+  }
+}
+
+
+
+PreProcessador.java
+
+package main.java.com.projeto.core;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.io.IOException;
+
+public class PreProcessador {
+
+    /**
+     * Lê o arquivo .fat e retorna seu conteúdo como String
+     * @param caminhoArquivo caminho do arquivo a ser lido
+     * @return conteúdo do arquivo
+     * @throws IOException se houver erro na leitura
+     */
+    public static String lerArquivo(String caminhoArquivo) throws IOException {
+        return Files.readString(Paths.get(caminhoArquivo));
+    }
+
+    /**
+     * Remove comentários do conteudo
+     * @param conteudo conteudo original com comentários
+     * @return conteudo sem comentários
+     */
+    public static String removerComentarios(String conteudo){
+      // Remove comentários de bloco (/* */) inclusive com múltiplas linhas
+      conteudo = conteudo.replaceAll("(?s)/\\*.*?\\*/", "");
+      // Remove comentários (//) até o final da linha
+      conteudo = conteudo.replaceAll("//.*", "");
+      return conteudo;
+    }
+
+    /**
+     * Remove espaços excessivos e colapsa linhas vazias
+     * @param conteudo conteudo original
+     * @return conteudo formatado
+     */
+    public static String formatarConteudo(String conteudo){
+      // Normaliza line endings (Windows \r\n -> \n) antes de qualquer processamento
+      conteudo = conteudo.replace("\r\n", "\n");
+      // Colapsa múltiplas linhas vazias e deixa no máximo uma
+      conteudo = conteudo.replaceAll("\n\\s*\n+", "\n\n");
+      // Remove espaços/tabs excessivos e os substitui por um único espaço
+      conteudo = conteudo.replaceAll("[ \t]+", " ");
+      // Remove espaços no início e fim
+      return conteudo.trim();
+    }
+
+    /**
+     * Escreve o conteúdo processado em um novo arquivo
+     * @param conteudoProcessado conteúdo a ser escrito
+     * @param caminhoArquivo caminho do arquivo de saída
+     * @throws IOException se houver erro na escrita
+     */
+    public static void escreverArquivo(String conteudoProcessado, String caminhoArquivo) throws IOException {
+        Files.writeString(Paths.get(caminhoArquivo), conteudoProcessado);
+    }
+
+    /**
+     * Processa o arquivo completo: lê, remove comentários, formata e escreve .esg
+     * @param caminhoArquivoEntrada caminho do arquivo .fat de entrada
+     * @throws IOException se houver erro na leitura/escrita
+     */
+    public static void processarArquivo(String caminhoArquivoEntrada) throws IOException {
+        // Gerar nome do arquivo de saída (.esg)
+        String caminhoArquivoSaida = caminhoArquivoEntrada.replace(".fat", ".esg");
+
+        // Ler arquivo
+        String conteudo = lerArquivo(caminhoArquivoEntrada);
+
+        // Remover comentários
+        conteudo = removerComentarios(conteudo);
+
+        // Formatar (remover espaços excessivos e linhas vazias)
+        conteudo = formatarConteudo(conteudo);
+
+        // Escrever arquivo .esg
+        escreverArquivo(conteudo, caminhoArquivoSaida);
+
+        System.out.println("Arquivo processado com sucesso: " + caminhoArquivoSaida);
+    }
+}
+
+
+
+PalavraReservada.java
+
+package main.java.com.projeto.core;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class PalavraReservada {
+    private static final Map<String, String> RESERVADAS = new HashMap<>();
+    
+    static {
+        RESERVADAS.put("start", "[start]");
+        RESERVADAS.put("end", "[end]");
+        RESERVADAS.put("var", "[var]");
+        RESERVADAS.put("read", "[read]");
+        RESERVADAS.put("write", "[write]");
+        RESERVADAS.put("if", "[if]");
+        RESERVADAS.put("then", "[then]");
+        RESERVADAS.put("(", "[(]");
+        RESERVADAS.put(")", "[)]");
+        RESERVADAS.put(":", "[:]");
+        RESERVADAS.put(";", "[;]");
+    }
+    
+    public static String buscar(String lexema) {
+        return RESERVADAS.get(lexema.toLowerCase());
+    }
+}
+
+
+
+TipoToken.java
+
+package main.java.com.projeto.core;
+
+/**
+ * Enum que representa os tipos de tokens reconhecidos pelo analisador léxico
+ */
+public enum TipoToken {
+    ID("Id"),           // (letra)+
+    NUMBER("Nu"),       // (digito)+
+    STRING("Fr"),       // "caracteres"
+    OPERATOR("Or"),     // < > =
+    ARITHMETIC("Om"),   // + * / -
+    LOGICAL("Ol"),      // AND OR NOT
+    RESERVED("");       // palavras reservadas
+
+    private String sigla;
+
+    TipoToken(String sigla) {
+        this.sigla = sigla;
+    }
+
+    public String getSigla() {
+        return sigla;
+    }
+}
+
+
+
+Token.java
+
+package main.java.com.projeto.core;
+
+/**
+ * Representa um token identificado pelo analisador léxico
+ */
+public class Token {
+    private TipoToken tipo;
+    private String valor;
+    private int linha;
+    private int coluna;
+
+    public Token(TipoToken tipo, String valor) {
+        this(tipo, valor, 0, 0);
+    }
+
+    public Token(TipoToken tipo, String valor, int linha, int coluna) {
+        this.tipo = tipo;
+        this.valor = valor;
+        this.linha = linha;
+        this.coluna = coluna;
+    }
+
+    public TipoToken getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(TipoToken tipo) {
+        this.tipo = tipo;
+    }
+
+    public String getValor() {
+        return valor;
+    }
+
+    public void setValor(String valor) {
+        this.valor = valor;
+    }
+
+    public int getLinha() {
+        return linha;
+    }
+
+    public void setLinha(int linha) {
+        this.linha = linha;
+    }
+
+    public int getColuna() {
+        return coluna;
+    }
+
+    public void setColuna(int coluna) {
+        this.coluna = coluna;
+    }
+
+    @Override
+    public String toString() {
+        return valor;
+    }
+}
+
+
+
+Tokenizacao.java
+
+package main.java.com.projeto.core;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ * Classe responsável por tokenizar o conteúdo do arquivo preprocessado
+ * Reconhece: palavras reservadas, identificadores, números, strings, operadores, etc
+ */
+public class Tokenizacao {
+
+    /**
+     * Tokeniza o conteúdo completo do arquivo
+     * @param conteudo conteúdo do arquivo preprocessado
+     * @return lista de tokens identificados
+     */
+    public static List<Token> tokenizar(String conteudo) {
+        List<Token> tokens = new ArrayList<>();
+        
+        // Split por espaços, quebras de linha e caracteres especiais
+        // Mantém os delimitadores também
+        Pattern pattern = Pattern.compile("[\\s]+|[^\\s]+");
+        Matcher matcher = pattern.matcher(conteudo);
+        
+        int linha = 1;
+        int coluna = 1;
+        
+        while (matcher.find()) {
+            String lexema = matcher.group();
+            
+            // Ignorar espaços em branco
+            if (lexema.trim().isEmpty()) {
+                // Contar quebras de linha
+                if (lexema.contains("\n")) {
+                    linha++;
+                    coluna = 1;
+                } else {
+                    coluna += lexema.length();
+                }
+                continue;
+            }
+            
+            Token token = identificarToken(lexema, linha, coluna);
+            if (token != null) {
+                tokens.add(token);
+            }
+            
+            coluna += lexema.length();
+        }
+        
+        return tokens;
+    }
+
+    /**
+     * Identifica o tipo de token baseado no lexema
+     * Ordem: Palavra Reservada → String → Número → Identificador → Operador → Lógico → Aritmético
+     * @param lexema o lexema a ser identificado
+     * @param linha número da linha
+     * @param coluna número da coluna
+     * @return Token identificado
+     */
+    private static Token identificarToken(String lexema, int linha, int coluna) {
+        // Verificar se é palavra reservada
+        String tokenReservada = PalavraReservada.buscar(lexema);
+        if (tokenReservada != null) {
+            return new Token(TipoToken.RESERVED, tokenReservada, linha, coluna);
+        }
+
+        // Verificar se é string ("...")
+        if (lexema.startsWith("\"") && lexema.endsWith("\"")) {
+            return new Token(TipoToken.STRING, lexema, linha, coluna);
+        }
+
+        // Verificar se é número (apenas dígitos)
+        if (lexema.matches("[0-9]+")) {
+            return new Token(TipoToken.NUMBER, "[Nu]", linha, coluna);
+        }
+
+        // Verificar se é identificador (começa com letra, contém letras/números/_)
+        if (lexema.matches("[a-zA-Z][a-zA-Z0-9_]*")) {
+            return new Token(TipoToken.ID, "[Id]", linha, coluna);
+        }
+
+        // Verificar se é operador de comparação (< > =)
+        if (lexema.matches("[<>=]+")) {
+            return new Token(TipoToken.OPERATOR, "[Or]", linha, coluna);
+        }
+
+        // Verificar se é operador lógico (AND OR NOT)
+        if (lexema.equalsIgnoreCase("AND") || lexema.equalsIgnoreCase("OR") || 
+            lexema.equalsIgnoreCase("NOT")) {
+            return new Token(TipoToken.LOGICAL, "[Ol]", linha, coluna);
+        }
+
+        // Verificar se é operador aritmético (+ * / -)
+        if (lexema.matches("[+\\-*/]")) {
+            return new Token(TipoToken.ARITHMETIC, "[Om]", linha, coluna);
+        }
+
+        // Token não reconhecido
+        System.err.println("Aviso: Lexema não reconhecido: '" + lexema + "' em linha " + linha);
+        return null;
+    }
+
+    /**
+     * Formata a lista de tokens para saída
+     * @param tokens lista de tokens
+     * @return string formatada
+     */
+    public static String formatarSaida(List<Token> tokens) {
+        StringBuilder sb = new StringBuilder();
+        for (Token token : tokens) {
+            sb.append(token.getValor()).append(" ");
+        }
+        return sb.toString().trim();
+    }
+}
+
+
