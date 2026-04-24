@@ -1,52 +1,27 @@
 package main.java.com.projeto;
 
-import main.java.com.projeto.core.analyzer.Tokenizacao;
-import main.java.com.projeto.core.model.Token;
-import main.java.com.projeto.core.processor.PreProcessador;
+import main.java.com.projeto.core.analyzer.AnalisadorLexico;
+import main.java.com.projeto.core.model.ResultadoAnalise;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
 
 public class Main {
 
   public static void main(String[] args) {
     try {
-      // Caminhos dos arquivos
-      String resourcesPath = System.getenv("LFAC_RESOURCES_PATH");
-      if (resourcesPath == null || resourcesPath.trim().isEmpty()) {
-        resourcesPath = "analisador-lexico/resources";
-      }
-      String caminhoArquivoFat = resourcesPath + "/arquivo.fat";
-      String caminhoArquivoEsg = caminhoArquivoFat.replace(".fat", ".esg");
-      String caminhoArquivoTks = caminhoArquivoFat.replace(".fat", ".tks");
-
-      // Pré-processar arquivo .fat e gerar arquivo .esg
+      // Criar analisador e executar análise completa
+      AnalisadorLexico analisador = new AnalisadorLexico();
+      
+      System.out.println("=== ANÁLISE LÉXICA ===\n");
       System.out.println("Pré-processando arquivo...");
-      PreProcessador.processarArquivo(caminhoArquivoFat);
-      System.out.println("Arquivo .esg gerado: " + caminhoArquivoEsg + "\n");
-
-      // Ler arquivo .esg
-      System.out.println("Lendo arquivo .esg...");
-      String conteudo = PreProcessador.lerArquivo(caminhoArquivoEsg);
-      System.out.println("Arquivo lido com sucesso\n");
-
-      // Tokenizar conteúdo
       System.out.println("Tokenizando...");
-      List<Token> tokens = Tokenizacao.tokenizar(conteudo);
-      System.out.println(tokens.size() + " tokens identificados\n");
-
-      // Exibir tokens
-      // System.out.println("TOKENS");
-      String saidaTokens = Tokenizacao.formatarSaida(tokens);
-      // System.out.println(saidaTokens);
-
-      // Salvar tokens em arquivo .tks
-      System.out.println("\nSALVANDO");
-      salvarTokensEmArquivo(saidaTokens, caminhoArquivoTks);
-      System.out.println("Tokens salvos em: " + caminhoArquivoTks);
-
+      
+      // Executar análise e salvar resultados
+      ResultadoAnalise resultado = analisador.analisarESalvar();
+      
+      // Exibir resumo
+      exibirResumo(resultado);
+      
     } catch (IOException e) {
       System.err.println("Erro ao processar arquivo: " + e.getMessage());
       e.printStackTrace();
@@ -54,13 +29,27 @@ public class Main {
   }
 
   /**
-   * Salva a saída de tokens em um arquivo .tks
+   * Exibe um resumo dos resultados da análise
    * 
-   * @param conteudo conteúdo formatado dos tokens
-   * @param caminho  caminho do arquivo de saída
-   * @throws IOException se houver erro na escrita
+   * @param resultado resultado da análise
    */
-  private static void salvarTokensEmArquivo(String conteudo, String caminho) throws IOException {
-    Files.writeString(Paths.get(caminho), conteudo);
+  private static void exibirResumo(ResultadoAnalise resultado) {
+    System.out.println("\n=== RESULTADO ===");
+    System.out.println("Arquivo: " + resultado.getNomeArquivoFonte());
+    System.out.println("Linhas: " + resultado.getTotalLinhas());
+    System.out.println("Tokens: " + resultado.getTotalTokens());
+    System.out.println("Erros: " + resultado.getTotalErros());
+    System.out.println("================\n");
+    
+    if (resultado.temErros()) {
+      resultado.getGerenciadorErros().exibirNoConsole();
+      String caminhoErr = resultado.getGerenciadorErros().toString();
+      System.out.println("Relatório de erros salvo em: arquivo.err");
+    } else {
+      System.out.println("✓ Nenhum erro encontrado durante a tokenização!");
+    }
+    
+    String caminhoTks = "arquivo.tks";
+    System.out.println("✓ Tokens salvos em: " + caminhoTks);
   }
 }
