@@ -13,7 +13,7 @@ public class Main {
 
   public static void main(String[] args) {
     try {
-      // Caminhos dos arquivos - usando variável de ambiente LFAC_RESOURCES_PATH
+      // Caminhos dos arquivos
       String resourcesPath = System.getenv("LFAC_RESOURCES_PATH");
       if (resourcesPath == null || resourcesPath.trim().isEmpty()) {
         resourcesPath = "analisador-lexico/resources";
@@ -38,11 +38,11 @@ public class Main {
       System.out.println(tokens.size() + " tokens identificados\n");
 
       // Exibir tokens
-      System.out.println("TOKENS");
+      // System.out.println("TOKENS");
       String saidaTokens = Tokenizacao.formatarSaida(tokens);
-      System.out.println(saidaTokens);
+      // System.out.println(saidaTokens);
 
-      // 5. Salvar tokens em arquivo .tks
+      // Salvar tokens em arquivo .tks
       System.out.println("\nSALVANDO");
       salvarTokensEmArquivo(saidaTokens, caminhoArquivoTks);
       System.out.println("Tokens salvos em: " + caminhoArquivoTks);

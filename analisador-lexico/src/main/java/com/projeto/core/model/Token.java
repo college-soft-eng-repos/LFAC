@@ -2,30 +2,42 @@ package main.java.com.projeto.core.model;
 
 /**
  * Representa um token identificado pelo analisador léxico
+ * Estrutura: [classe, valor] com linha e coluna
  */
 public class Token {
-    private TipoToken tipo;
-    private String valor;
+    private String classe;      // Tipo do token (var, id, fr, etc)
+    private String valor;       // Valor específico (índice, conteúdo, etc)
     private int linha;
     private int coluna;
 
-    public Token(TipoToken tipo, String valor) {
-        this(tipo, valor, 0, 0);
+    /**
+     * Construtor com classe e valor
+     */
+    public Token(String classe, String valor) {
+        this(classe, valor, 0, 0);
     }
 
-    public Token(TipoToken tipo, String valor, int linha, int coluna) {
-        this.tipo = tipo;
+    /**
+     * Construtor completo
+     * 
+     * @param classe o tipo do token
+     * @param valor o valor específico do token
+     * @param linha número da linha
+     * @param coluna número da coluna
+     */
+    public Token(String classe, String valor, int linha, int coluna) {
+        this.classe = classe;
         this.valor = valor;
         this.linha = linha;
         this.coluna = coluna;
     }
 
-    public TipoToken getTipo() {
-        return tipo;
+    public String getClasse() {
+        return classe;
     }
 
-    public void setTipo(TipoToken tipo) {
-        this.tipo = tipo;
+    public void setClasse(String classe) {
+        this.classe = classe;
     }
 
     public String getValor() {
@@ -52,8 +64,18 @@ public class Token {
         this.coluna = coluna;
     }
 
+    /**
+     * Retorna a representação do token no formato [classe, valor]
+     * Se valor estiver vazio, retorna apenas [classe]
+     * 
+     * @return representação formatada do token
+     */
     @Override
     public String toString() {
-        return valor;
+        if (valor == null || valor.isEmpty()) {
+            return "[" + classe + "]";
+        } else {
+            return "[" + classe + ", " + valor + "]";
+        }
     }
 }
