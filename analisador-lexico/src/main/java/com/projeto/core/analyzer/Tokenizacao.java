@@ -17,6 +17,7 @@ import main.java.com.projeto.core.model.Token;
  * - valor: índice na tabela (para id), conteúdo (para fr), valor (para nu), etc
  */
 public class Tokenizacao {
+    private static GerenciadorErros gerenciadorErros;
 
     /**
      * Tokeniza o conteúdo completo do arquivo
@@ -28,6 +29,7 @@ public class Tokenizacao {
      */
     public static List<Token> tokenizar(String conteudo) {
         List<Token> tokens = new ArrayList<>();
+        gerenciadorErros = new GerenciadorErros();
         TabelaSimbolos tabela = new TabelaSimbolos();
         int[] pos = { 0, 1, 1 }; // i, linha, coluna
 
@@ -55,6 +57,18 @@ public class Tokenizacao {
         }
 
         return tokens;
+    }
+
+    /**
+     * Retorna o gerenciador de erros da última tokenização
+     * 
+     * @return gerenciador de erros
+     */
+    public static GerenciadorErros obterGerenciadorErros() {
+        if (gerenciadorErros == null) {
+            gerenciadorErros = new GerenciadorErros();
+        }
+        return gerenciadorErros;
     }
 
     /**
@@ -221,36 +235,7 @@ public class Tokenizacao {
         }
 
         // Token não reconhecido
-        System.err.println("Aviso: Lexema não reconhecido: '" + lexema + "' em linha " + linha);
+        gerenciadorErros.adicionarErro(lexema, linha, coluna);
         return null;
-    }
-
-    /**
-     * Formata a lista de tokens para saída, mantendo as linhas do arquivo original
-     * Preserva linhas vazias também
-     * 
-     * @param tokens lista de tokens
-     * @return string formatada com quebra de linhas
-     */
-    public static String formatarSaida(List<Token> tokens) {
-        if (tokens.isEmpty()) {
-            return "";
-        }
-
-        StringBuilder sb = new StringBuilder();
-        int linhaAtual = tokens.get(0).getLinha();
-
-        for (Token token : tokens) {
-            // Se mudou de linha, adiciona quebras para cada linha vazia
-            if (token.getLinha() != linhaAtual) {
-                // Adiciona quebras para linhas que não têm tokens
-                for (int i = linhaAtual; i < token.getLinha(); i++) {
-                    sb.append("\n");
-                }
-                linhaAtual = token.getLinha();
-            }
-            sb.append(token.toString()).append(" ");
-        }
-        return sb.toString().trim();
     }
 }
