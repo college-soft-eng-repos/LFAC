@@ -1,0 +1,6 @@
+# Ignorar pasta de recursos (arquivos de entrada/saída)
+analisador-lexico/resources/
+
+# Ignorar arquivos compilados e empacotados
+*.class
+*.jar
