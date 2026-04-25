@@ -1,18 +1,18 @@
-package main.java.com.projeto.core.lexema;
+package main.java.com.projeto.core.model;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Tabela de símbolos para armazenar identificadores
+ * Tabela para armazenar identificadores
  * Cada ID novo recebe um índice sequencial
  */
-public class TabelaSimbolos {
-    private Map<String, Integer> simbolos;
+public class Identificador {
+    private Map<String, Integer> identificadores;
     private int proximoIndice;
 
-    public TabelaSimbolos() {
-        this.simbolos = new HashMap<>();
+    public Identificador() {
+        this.identificadores = new HashMap<>();
         this.proximoIndice = 0;
     }
 
@@ -24,12 +24,12 @@ public class TabelaSimbolos {
      * @param simbolo o identificador a registrar
      * @return o índice do símbolo na tabela
      */
-    public int obterOuRegistrar(String simbolo) {
-        if (simbolos.containsKey(simbolo)) {
-            return simbolos.get(simbolo);
+    public int obterOuRegistrar(String identificador) {
+        if (identificadores.containsKey(identificador)) {
+            return identificadores.get(identificador);
         } else {
             int indice = proximoIndice;
-            simbolos.put(simbolo, indice);
+            identificadores.put(identificador, indice);
             proximoIndice++;
             return indice;
         }
@@ -41,8 +41,8 @@ public class TabelaSimbolos {
      * @param simbolo o identificador a buscar
      * @return o índice ou -1 se não encontrado
      */
-    public int buscar(String simbolo) {
-        return simbolos.getOrDefault(simbolo, -1);
+    public int buscar(String identificador) {
+        return identificadores.getOrDefault(identificador, -1);
     }
 
     /**
@@ -51,7 +51,7 @@ public class TabelaSimbolos {
      * @return mapa de símbolos
      */
     public Map<String, Integer> obterTodos() {
-        return new HashMap<>(simbolos);
+        return new HashMap<>(identificadores);
     }
 
     /**
@@ -60,6 +60,6 @@ public class TabelaSimbolos {
      * @return quantidade de símbolos
      */
     public int getTamanho() {
-        return simbolos.size();
+        return identificadores.size();
     }
 }

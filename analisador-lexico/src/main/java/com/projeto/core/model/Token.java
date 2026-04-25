@@ -2,7 +2,6 @@ package main.java.com.projeto.core.model;
 
 /**
  * Representa um token identificado pelo analisador léxico
- * Estrutura: [classe, valor] com linha e coluna
  */
 public class Token {
     private String classe;      // Tipo do token (var, id, fr, etc)

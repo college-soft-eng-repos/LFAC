@@ -1,4 +1,4 @@
-package main.java.com.projeto.core.processor;
+package main.java.com.projeto.core.service;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,43 +20,41 @@ public class GerenciadorArquivos {
         this.resourcesPath = resourcesPath;
     }
 
+    public String getCaminhoEnt() {
+        return resourcesPath + "/arquivo.ent";
+    }
+
+    public String getCaminhoPpr() {
+        return getCaminhoEnt().replace(".ent", ".ppr");
+    }
+
+    public String getCaminhoTks() {
+        return getCaminhoEnt().replace(".ent", ".tks");
+    }
+
+    public String getCaminhoErr() {
+        return getCaminhoEnt().replace(".ent", ".err");
+    }
+
+    public String getResourcesPath() {
+        return resourcesPath;
+    }
+
+    public void setResourcesPath(String resourcesPath) {
+        this.resourcesPath = resourcesPath;
+    }
+
     /**
-     * Obtém o caminho de recursos - variável de ambiente ou padrão
+     * Obtém o caminho de recursos - variável de ambiente ou falback padrão
      */
     private static String obterResourcesPath() {
         String path = System.getenv("LFAC_RESOURCES_PATH");
         if (path == null || path.trim().isEmpty()) {
-            path = "analisador-lexico/resources";
+            // Usar caminho absoluto baseado no diretório do projeto
+            String projectDir = System.getProperty("user.dir");
+            path = projectDir + "/analisador-lexico/resources";
         }
         return path;
-    }
-
-    /**
-     * Retorna o caminho do arquivo .fat - arquivo fonte original
-     */
-    public String getCaminhoFat() {
-        return resourcesPath + "/arquivo.fat";
-    }
-
-    /**
-     * Retorna o caminho do arquivo .esg - arquivo preprocessado
-     */
-    public String getCaminhoEsg() {
-        return getCaminhoFat().replace(".fat", ".esg");
-    }
-
-    /**
-     * Retorna o caminho do arquivo .tks - arquivo de tokens
-     */
-    public String getCaminhoTks() {
-        return getCaminhoFat().replace(".fat", ".tks");
-    }
-
-    /**
-     * Retorna o caminho do arquivo .err - arquivo de erros
-     */
-    public String getCaminhoErr() {
-        return getCaminhoFat().replace(".fat", ".err");
     }
 
     /**
@@ -93,19 +91,5 @@ public class GerenciadorArquivos {
         if (!Files.exists(path)) {
             throw new IOException("Arquivo não encontrado: " + caminho);
         }
-    }
-
-    /**
-     * Retorna o caminho de recursos
-     */
-    public String getResourcesPath() {
-        return resourcesPath;
-    }
-
-    /**
-     * Define o caminho de recursos
-     */
-    public void setResourcesPath(String resourcesPath) {
-        this.resourcesPath = resourcesPath;
     }
 }

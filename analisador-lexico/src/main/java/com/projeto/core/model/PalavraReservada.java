@@ -1,4 +1,4 @@
-package main.java.com.projeto.core.lexema;
+package main.java.com.projeto.core.model;
 
 import java.util.HashMap;
 import java.util.Map;

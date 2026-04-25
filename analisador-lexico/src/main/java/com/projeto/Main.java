@@ -1,7 +1,7 @@
 package main.java.com.projeto;
 
-import main.java.com.projeto.core.analyzer.AnalisadorLexico;
-import main.java.com.projeto.core.model.ResultadoAnalise;
+import main.java.com.projeto.core.GerenciadorProcessamento;
+import main.java.com.projeto.core.dto.ResultadoAnalise;
 
 import java.io.IOException;
 
@@ -10,7 +10,7 @@ public class Main {
   public static void main(String[] args) {
     try {
       // Criar analisador e executar análise completa
-      AnalisadorLexico analisador = new AnalisadorLexico();
+      GerenciadorProcessamento analisador = new GerenciadorProcessamento();
       
       System.out.println("=== ANÁLISE LÉXICA ===\n");
       System.out.println("Pré-processando arquivo...");
@@ -43,7 +43,7 @@ public class Main {
     
     if (resultado.temErros()) {
       resultado.getGerenciadorErros().exibirNoConsole();
-      String caminhoErr = resultado.getGerenciadorErros().toString();
+  
       System.out.println("Relatório de erros salvo em: arquivo.err");
     } else {
       System.out.println("✓ Nenhum erro encontrado durante a tokenização!");

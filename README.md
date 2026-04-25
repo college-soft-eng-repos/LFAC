@@ -16,7 +16,7 @@ Este é um projeto acadêmico para a disciplina de **Linguagens Formais e Compil
    - Strings entre aspas
    - Operadores e símbolos especiais
 3. **Gera saída** em 3 arquivos:
-   - `arquivo.esg` - código pré-processado
+   - `arquivo.ppr` - código pré-processado
    - `arquivo.tks` - tokens encontrados
    - `arquivo.err` - erros de tokenização (se houver)
 
@@ -42,8 +42,8 @@ analisador-lexico/
 │           └── ResultadoAnalise.java      # Resultado da análise
 ├── src/test/java/com/projeto/             # Testes unitários (em desenvolvimento)
 ├── resources/
-│   ├── arquivo.fat                        # Arquivo de entrada (código-fonte)
-│   ├── arquivo.esg                        # Saída pré-processada
+│   ├── arquivo.ent                        # Arquivo de entrada (código-fonte)
+│   ├── arquivo.ppr                        # Saída pré-processada
 │   ├── arquivo.tks                        # Saída de tokens
 │   └── arquivo.err                        # Saída de erros
 ├── bin/                                   # Arquivos compilados
@@ -55,7 +55,7 @@ analisador-lexico/
 ### Pré-requisitos
 
 - Java 8 ou superior
-- Um arquivo de entrada nomeado `arquivo.fat` em `resources/`
+- Um arquivo de entrada nomeado `arquivo.ent` em `resources/`
 
 ### Compilação
 
@@ -78,11 +78,11 @@ java -cp bin main.java.com.projeto.Main
 
 A saída será exibida no console, e os arquivos de resultado serão gerados em `resources/`:
 
-- `arquivo.esg` - código processado (sem comentários)
+- `arquivo.ppr` - código processado (sem comentários)
 - `arquivo.tks` - lista de tokens identificados
 - `arquivo.err` - erros de tokenização (se houver)
 
-### Exemplo de Entrada (`arquivo.fat`)
+### Exemplo de Entrada (`arquivo.ent`)
 
 ```
 var x;
@@ -175,7 +175,7 @@ Modifique o método `identificarOperador()` em [src/main/java/com/projeto/core/a
 
 ### Modificar o Arquivo de Entrada
 
-Edite o arquivo `resources/arquivo.fat` com seu próprio código-fonte para análise.
+Edite o arquivo `resources/arquivo.ent` com seu próprio código-fonte para análise.
 
 ## Referências
 

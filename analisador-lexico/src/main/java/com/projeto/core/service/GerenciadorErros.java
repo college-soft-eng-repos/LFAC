@@ -1,4 +1,4 @@
-package main.java.com.projeto.core.analyzer;
+package main.java.com.projeto.core.service;
 
 import java.io.IOException;
 import java.nio.file.Files;

@@ -1,7 +1,9 @@
-package main.java.com.projeto.core.model;
+package main.java.com.projeto.core.dto;
 
 import java.util.List;
-import main.java.com.projeto.core.analyzer.GerenciadorErros;
+
+import main.java.com.projeto.core.model.Token;
+import main.java.com.projeto.core.service.GerenciadorErros;
 
 /**
  * Encapsula o resultado completo da análise léxica
